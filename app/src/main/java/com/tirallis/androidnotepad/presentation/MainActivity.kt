@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.tirallis.androidnotepad.presentation.screens.notes.NotesScreen
 import com.tirallis.androidnotepad.presentation.ui.theme.AndroidNotePadTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,9 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AndroidNotePadTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TODO("$innerPadding")
-                }
+                NotesScreen()
             }
         }
     }
