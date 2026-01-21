@@ -23,9 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 class NotesViewModel : ViewModel() {
-
     private val repository = TestNotesRepositoryImpl
-
     private val addNoteUseCase = AddNoteUseCase(repository)
     private val editNoteUseCase = EditNoteUseCase(repository)
     private val deleteNoteUseCase = DeleteNoteUseCase(repository)
@@ -33,22 +31,18 @@ class NotesViewModel : ViewModel() {
     private val getNoteUseCase = GetNoteUseCase(repository)
     private val searchNotesUseCase = SearchNotesUseCase(repository)
     private val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)
-
     private val query = MutableStateFlow("")
-
     private val _state = MutableStateFlow(NotesScreenState())
     val state = _state.asStateFlow()
-
     val scope = CoroutineScope(Dispatchers.IO)
 
     //TODO: Не забудь удалить метод, нужен только для проверки
     private fun addSomeNotes() {
-        repeat(50) {
+        repeat(1000) {
             addNoteUseCase(title = "Title №$it", content = "Content №$it")
         }
 
     }
-
 
     init {
         addSomeNotes()
@@ -60,7 +54,7 @@ class NotesViewModel : ViewModel() {
                 if (userInput.isBlank()) {
                     getAllNotesUseCase()
                 } else {
-                    searchNotesUseCase(userInput)
+                    searchNotesUseCase(userInput.trim())
                 }
             }
             .onEach {
@@ -86,7 +80,7 @@ class NotesViewModel : ViewModel() {
             }
 
             is NotesCommand.InputSearchQuery -> {
-                query.update { command.query.trim() }
+                query.update { command.query }
             }
 
             is NotesCommand.SwitchPinnedStatus -> {
