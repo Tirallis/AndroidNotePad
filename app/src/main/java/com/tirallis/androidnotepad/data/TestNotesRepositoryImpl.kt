@@ -2,6 +2,7 @@ package com.tirallis.androidnotepad.data
 
 import com.tirallis.androidnotepad.domain.Note
 import com.tirallis.androidnotepad.domain.NotesRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,20 +13,25 @@ object TestNotesRepositoryImpl : NotesRepository {
 
     private val notesListFlow = MutableStateFlow<List<Note>>(listOf())
 
-    override fun addNote(title: String, content: String) {
+    override suspend fun addNote(
+        title: String,
+        content: String,
+        isPinned: Boolean,
+        updatedAt: Long
+    ) {
         notesListFlow.update { oldList ->
             val note = Note(
                 id = oldList.size,
                 title = title,
                 text = content,
-                updatedAt = System.currentTimeMillis(),
-                isPinned = false
+                updatedAt = updatedAt,
+                isPinned = isPinned
             )
             oldList + note
         }
     }
 
-    override fun deleteNode(noteId: Int) {
+    override suspend fun deleteNode(noteId: Int) {
         notesListFlow.update { oldList ->
             oldList.toMutableList().apply {
                 removeIf { note -> note.id == noteId }
@@ -33,7 +39,7 @@ object TestNotesRepositoryImpl : NotesRepository {
         }
     }
 
-    override fun editNote(note: Note) {
+    override suspend fun editNote(note: Note) {
         notesListFlow.update { oldList ->
             oldList.map {
                 if (it.id == note.id) {
@@ -49,7 +55,7 @@ object TestNotesRepositoryImpl : NotesRepository {
         return notesListFlow.asStateFlow()
     }
 
-    override fun getNote(noteId: Int): Note {
+    override suspend fun getNote(noteId: Int): Note {
         return notesListFlow.value.first { note ->
             note.id == noteId
         }
@@ -63,7 +69,7 @@ object TestNotesRepositoryImpl : NotesRepository {
         }
     }
 
-    override fun switchPinnedStatus(noteId: Int) {
+    override suspend fun switchPinnedStatus(noteId: Int) {
         notesListFlow.update { oldList ->
             oldList.map {
                 if (it.id == noteId) {
