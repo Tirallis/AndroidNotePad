@@ -57,7 +57,7 @@ fun NotesScreen(
         item {
             Title(
                 modifier.padding(horizontal = 24.dp),
-                text = "All Notes"
+                text = "Все Заметки"
             )
         }
         item {
@@ -76,7 +76,7 @@ fun NotesScreen(
         item {
             Subtitle(
                 modifier.padding(horizontal = 24.dp),
-                text = "Pinned"
+                text = "Закреплено"
             )
         }
         item {
@@ -117,7 +117,7 @@ fun NotesScreen(
         item {
             Subtitle(
                 modifier = modifier.padding(horizontal = 24.dp),
-                text = "Other"
+                text = "Остальное"
             )
         }
         item {
