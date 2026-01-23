@@ -1,8 +1,9 @@
 package com.tirallis.androidnotepad.presentation.screens.editing
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tirallis.androidnotepad.data.TestNotesRepositoryImpl
+import com.tirallis.androidnotepad.data.NotesRepositoryImpl
 import com.tirallis.androidnotepad.domain.DeleteNoteUseCase
 import com.tirallis.androidnotepad.domain.EditNoteUseCase
 import com.tirallis.androidnotepad.domain.GetNoteUseCase
@@ -12,9 +13,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EditNoteViewModel(private val noteId: Int) : ViewModel() {
+class EditNoteViewModel(private val noteId: Int, context: Context) : ViewModel() {
 
-    private val repository = TestNotesRepositoryImpl
+    private val repository = NotesRepositoryImpl.getInstance(context)
     private val editNoteUseCase = EditNoteUseCase(repository)
     private val getNoteUseCase = GetNoteUseCase(repository)
     private val deleteNoteUseCase = DeleteNoteUseCase(repository)
@@ -37,7 +38,7 @@ class EditNoteViewModel(private val noteId: Int) : ViewModel() {
             is EditNoteCommand.InputContent -> {
                 _state.update { previousState ->
                     if (previousState is EditNoteState.Edition) {
-                        val newNote = previousState.note.copy(text = command.content)
+                        val newNote = previousState.note.copy(content = command.content)
                         previousState.copy(note = newNote)
                     } else {
                         previousState
@@ -103,7 +104,7 @@ sealed interface EditNoteState {
         val note: Note
     ) : EditNoteState {
         val isSaveEnabled: Boolean
-            get() = note.title.isNotBlank() && note.text.isNotBlank()
+            get() = note.title.isNotBlank() && note.content.isNotBlank()
     }
 
     data object Finished : EditNoteState

@@ -1,8 +1,10 @@
 package com.tirallis.androidnotepad.presentation.navigation
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.tirallis.androidnotepad.presentation.screens.creation.CreateNoteScreen
 import com.tirallis.androidnotepad.presentation.screens.easterEggs.EasterEggScreen
 import com.tirallis.androidnotepad.presentation.screens.editing.EditNoteScreen
@@ -10,60 +12,63 @@ import com.tirallis.androidnotepad.presentation.screens.notes.NotesScreen
 
 @Composable
 fun NavGraph() {
-    val screen = remember {
-        mutableStateOf<Screen>(Screen.Notes)
-    }
-
-    when (val currentScreen = screen.value) {
-        Screen.CreateNote -> {
-            CreateNoteScreen(
-                onFinished = {
-                    screen.value = Screen.Notes
-                }
-            )
-        }
-
-        Screen.EasterEgg -> {
-            EasterEggScreen(
-                onFinished = {
-                    screen.value = Screen.Notes
-                }
-            )
-        }
-
-        is Screen.EditNote -> {
-            EditNoteScreen(
-                noteId = currentScreen.noteId,
-                onFinished = {
-                    screen.value = Screen.Notes
-                }
-            )
-        }
-
-        Screen.Notes -> {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Notes.route
+    ) {
+        composable(Screen.Notes.route) {
             NotesScreen(
                 onNoteClick = {
-                    screen.value = Screen.EditNote(it.id)
+                    navController.navigate(Screen.EditNote.createRoute(noteId = it.id))
                 },
                 onAddNoteClick = {
-                    screen.value = Screen.CreateNote
+                    navController.navigate(Screen.CreateNote.route)
                 },
                 onTitleClick = {
-                    screen.value = Screen.EasterEgg
+                    navController.navigate(Screen.EasterEgg.route)
+                }
+            )
+        }
+        composable(Screen.CreateNote.route) {
+            CreateNoteScreen(
+                onFinished = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(Screen.EditNote.route) {
+            val noteId = Screen.EditNote.getNoteId(it.arguments)
+            EditNoteScreen(
+                noteId = noteId,
+                onFinished = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(Screen.EasterEgg.route) {
+            EasterEggScreen(
+                onFinished = {
+                    navController.popBackStack()
                 }
             )
         }
     }
 }
 
-sealed interface Screen {
+sealed class Screen(
+    val route: String
+) {
+    data object Notes : Screen("main")
+    data object CreateNote : Screen("create")
+    data object EasterEgg : Screen("eggs")
+    data object EditNote: Screen("edit/{note_id}") {
+        fun createRoute(noteId: Int): String {
+            return "edit/$noteId"
+        }
 
-    data object Notes : Screen
-    data object CreateNote : Screen
-    data object EasterEgg : Screen
-    data class EditNote(
-        val noteId: Int
-    ) : Screen
-
-
+        fun getNoteId(arguments: Bundle?): Int {
+            return arguments?.getString("note_id")?.toInt() ?: 0
+        }
+    }
 }

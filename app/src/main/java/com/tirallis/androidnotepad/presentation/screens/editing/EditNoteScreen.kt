@@ -2,6 +2,7 @@
 
 package com.tirallis.androidnotepad.presentation.screens.editing
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,8 +40,9 @@ import com.tirallis.androidnotepad.presentation.utils.DateFormater
 fun EditNoteScreen(
     modifier: Modifier = Modifier,
     noteId: Int,
+    context: Context = LocalContext.current.applicationContext,
     viewModel: EditNoteViewModel = viewModel {
-        EditNoteViewModel(noteId)
+        EditNoteViewModel(noteId, context)
     },
     onFinished: () -> Unit,
 ) {
@@ -128,7 +131,7 @@ fun EditNoteScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp)
                             .weight(1f),
-                        value = currentState.note.text,
+                        value = currentState.note.content,
                         onValueChange = {
                             viewModel.processCommand(EditNoteCommand.InputContent(it))
                         },

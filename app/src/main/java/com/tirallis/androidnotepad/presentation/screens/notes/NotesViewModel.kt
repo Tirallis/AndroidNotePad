@@ -2,9 +2,10 @@
 
 package com.tirallis.androidnotepad.presentation.screens.notes
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tirallis.androidnotepad.data.TestNotesRepositoryImpl
+import com.tirallis.androidnotepad.data.NotesRepositoryImpl
 import com.tirallis.androidnotepad.domain.GetAllNotesUseCase
 import com.tirallis.androidnotepad.domain.Note
 import com.tirallis.androidnotepad.domain.SearchNotesUseCase
@@ -18,8 +19,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotesViewModel : ViewModel() {
-    private val repository = TestNotesRepositoryImpl
+class NotesViewModel(
+    context: Context
+) : ViewModel() {
+    private val repository = NotesRepositoryImpl.getInstance(context)
     private val getAllNotesUseCase = GetAllNotesUseCase(repository)
     private val searchNotesUseCase = SearchNotesUseCase(repository)
     private val switchPinnedStatusUseCase = SwitchPinnedStatusUseCase(repository)

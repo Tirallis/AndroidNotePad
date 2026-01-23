@@ -2,7 +2,6 @@ package com.tirallis.androidnotepad.data
 
 import com.tirallis.androidnotepad.domain.Note
 import com.tirallis.androidnotepad.domain.NotesRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +28,7 @@ object TestNotesRepositoryImpl : NotesRepository {
             val note = Note(
                 id = oldList.size,
                 title = title,
-                text = content,
+                content = content,
                 updatedAt = updatedAt,
                 isPinned = isPinned
             )
@@ -70,7 +69,7 @@ object TestNotesRepositoryImpl : NotesRepository {
     override fun searchNotes(query: String): Flow<List<Note>> {
         return notesListFlow.map { currentList ->
             currentList.filter {
-                it.title.contains(query) || it.text.contains(query)
+                it.title.contains(query) || it.content.contains(query)
             }
         }
     }

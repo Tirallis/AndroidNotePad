@@ -2,6 +2,7 @@
 
 package com.tirallis.androidnotepad.presentation.screens.notes
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,7 +56,10 @@ import com.tirallis.androidnotepad.presentation.utils.DateFormater
 @Composable
 fun NotesScreen(
     modifier: Modifier = Modifier,
-    viewModel: NotesViewModel = viewModel(),
+    context: Context = LocalContext.current.applicationContext,
+    viewModel: NotesViewModel = viewModel {
+        NotesViewModel(context)
+    },
     onNoteClick: (Note) -> Unit,
     onAddNoteClick: () -> Unit,
     onTitleClick: () -> Unit = {}
@@ -289,7 +294,7 @@ fun NoteCard(
         )
         Spacer(modifier = modifier.height(24.dp))
         Text(
-            text = note.text,
+            text = note.content,
             fontSize = 16.sp,
             maxLines = 3,
             fontWeight = FontWeight.Medium,
