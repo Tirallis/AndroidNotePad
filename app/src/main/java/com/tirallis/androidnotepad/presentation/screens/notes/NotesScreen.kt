@@ -149,7 +149,7 @@ fun NotesScreen(
                 }
             } else {
                 item {
-                    Image(
+                    Image(modifier = modifier.padding(start = 24.dp, end = 24.dp),
                         bitmap = ImageBitmap.imageResource(R.drawable.ic_please_image),
                         contentDescription = "Позязя.."
                     )
