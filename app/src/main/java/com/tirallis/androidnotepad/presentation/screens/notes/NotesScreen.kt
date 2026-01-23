@@ -56,7 +56,8 @@ fun NotesScreen(
     modifier: Modifier = Modifier,
     viewModel: NotesViewModel = viewModel(),
     onNoteClick: (Note) -> Unit,
-    onAddNoteClick: () -> Unit
+    onAddNoteClick: () -> Unit,
+    onTitleClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -83,9 +84,7 @@ fun NotesScreen(
                 Title(
                     modifier.padding(horizontal = 24.dp),
                     text = "Заметки",
-                    onTitleClick = {
-
-                    }
+                    onTitleClick = onTitleClick
                 )
             }
             item {
@@ -185,12 +184,12 @@ fun NotesScreen(
 private fun Title(
     modifier: Modifier = Modifier,
     text: String,
-    onTitleClick: () -> Unit = {}
+    onTitleClick: () -> Unit
 ) {
     Text(
         modifier = modifier
             .clickable {
-                onTitleClick
+                onTitleClick()
             },
         text = text,
         fontSize = 24.sp,

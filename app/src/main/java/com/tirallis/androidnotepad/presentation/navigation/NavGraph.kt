@@ -47,6 +47,9 @@ fun NavGraph() {
                 },
                 onAddNoteClick = {
                     screen.value = Screen.CreateNote
+                },
+                onTitleClick = {
+                    screen.value = Screen.EasterEgg
                 }
             )
         }
