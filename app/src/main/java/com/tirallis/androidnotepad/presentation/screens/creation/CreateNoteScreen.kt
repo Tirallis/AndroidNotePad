@@ -2,7 +2,6 @@
 
 package com.tirallis.androidnotepad.presentation.screens.creation
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,29 +26,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.tirallis.androidnotepad.presentation.utils.DateFormater
 
 @Composable
 fun CreateNoteScreen(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current.applicationContext,
-    viewModel: CreateNoteViewModel = viewModel {
-        CreateNoteViewModel(context)
-    },
+    viewModel: CreateNoteViewModel = hiltViewModel(),
     onFinished: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     when (val currentState = state) {
         is CreateNoteState.Creation -> {
             Scaffold(
-                modifier = modifier,
-                topBar = {
+                modifier = modifier, topBar = {
                     TopAppBar(
                         title = {
                             Text(
@@ -58,12 +52,10 @@ fun CreateNoteScreen(
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
+                        }, colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = Color.Transparent,
                             navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                        navigationIcon = {
+                        ), navigationIcon = {
                             Icon(
                                 modifier = Modifier
                                     .padding(start = 16.dp, end = 8.dp)
@@ -73,10 +65,8 @@ fun CreateNoteScreen(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Назад"
                             )
-                        }
-                    )
-                }
-            ) { innerPadding ->
+                        })
+                }) { innerPadding ->
                 Column(modifier = modifier.padding(innerPadding)) {
                     TextField(
                         modifier = modifier
@@ -135,8 +125,7 @@ fun CreateNoteScreen(
                             )
                         },
                         textStyle = TextStyle(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     Button(

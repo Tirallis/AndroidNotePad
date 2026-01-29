@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tirallis.androidnotepad.R
 import com.tirallis.androidnotepad.domain.Note
@@ -56,10 +57,7 @@ import com.tirallis.androidnotepad.presentation.utils.DateFormater
 @Composable
 fun NotesScreen(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current.applicationContext,
-    viewModel: NotesViewModel = viewModel {
-        NotesViewModel(context)
-    },
+    viewModel: NotesViewModel = hiltViewModel(),
     onNoteClick: (Note) -> Unit,
     onAddNoteClick: () -> Unit,
     onTitleClick: () -> Unit = {}
@@ -144,21 +142,23 @@ fun NotesScreen(
                 Spacer(modifier = modifier.height(24.dp))
             }
             if (state.otherNotes.isNotEmpty()) {
-
                 item {
                     Subtitle(
                         modifier = modifier.padding(horizontal = 24.dp),
                         text = "Остальное"
                     )
                 }
-            } else {
+            }
+            if (state.pinnedNotes.isEmpty() && state.otherNotes.isEmpty() && state.query.isEmpty()) {
                 item {
-                    Image(modifier = modifier.padding(start = 24.dp, end = 24.dp),
+                    Image(
+                        modifier = modifier.padding(start = 24.dp, end = 24.dp),
                         bitmap = ImageBitmap.imageResource(R.drawable.ic_please_image),
                         contentDescription = "Позязя.."
                     )
                 }
             }
+
             item {
                 Spacer(modifier = modifier.height(16.dp))
             }
