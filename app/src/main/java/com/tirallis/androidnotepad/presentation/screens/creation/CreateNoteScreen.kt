@@ -2,6 +2,9 @@
 
 package com.tirallis.androidnotepad.presentation.screens.creation
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.tirallis.androidnotepad.presentation.ui.theme.customIcons.CustomIcons
 import com.tirallis.androidnotepad.presentation.utils.DateFormater
 
 @Composable
@@ -40,8 +45,16 @@ fun CreateNoteScreen(
     onFinished: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = {
+            Log.d("CreateNoteScreen", it.toString())
+        }
+    )
     when (val currentState = state) {
         is CreateNoteState.Creation -> {
+            Icons.Default.Search
             Scaffold(
                 modifier = modifier, topBar = {
                     TopAppBar(
@@ -65,6 +78,18 @@ fun CreateNoteScreen(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Назад"
                             )
+                        }, actions = {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = 24.dp)
+                                    .clickable {
+                                        imagePicker.launch("image/*")
+                                    },
+                                imageVector = CustomIcons.MaterialSymbolsAddPhotoAlternate,
+                                contentDescription = "Add photo from gallery",
+                                tint = MaterialTheme.colorScheme.onSurface,
+
+                                )
                         })
                 }) { innerPadding ->
                 Column(modifier = modifier.padding(innerPadding)) {

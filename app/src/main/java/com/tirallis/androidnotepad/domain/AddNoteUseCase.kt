@@ -7,13 +7,14 @@ class AddNoteUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        title: String, content: String
+        title: String, content: List<ContentItem>
     ) {
         repository.addNote(
             title = title,
             content = content,
             isPinned = false,
-            updatedAt = System.currentTimeMillis())
+            updatedAt = System.currentTimeMillis()
+        )
     }
 
 }

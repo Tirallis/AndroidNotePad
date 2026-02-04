@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tirallis.androidnotepad.R
+import com.tirallis.androidnotepad.domain.ContentItem
 import com.tirallis.androidnotepad.domain.Note
 import com.tirallis.androidnotepad.presentation.ui.theme.OtherNotesColors
 import com.tirallis.androidnotepad.presentation.ui.theme.PinnedNotesColors
@@ -293,13 +294,19 @@ fun NoteCard(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = modifier.height(24.dp))
-        Text(
-            text = note.content,
-            fontSize = 16.sp,
-            maxLines = 3,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            overflow = TextOverflow.Ellipsis,
-        )
+
+        note.content
+            .filterIsInstance<ContentItem.Text>()
+            .joinToString("\n") { it.content }
+            .let {
+                Text(
+                    text = it,
+                    fontSize = 16.sp,
+                    maxLines = 3,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
     }
 }

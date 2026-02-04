@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.tirallis.androidnotepad.domain.ContentItem
 import com.tirallis.androidnotepad.presentation.utils.DateFormater
 
 @Composable
@@ -125,33 +126,17 @@ fun EditNoteScreen(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    TextField(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp)
-                            .weight(1f),
-                        value = currentState.note.content,
-                        onValueChange = {
-                            viewModel.processCommand(EditNoteCommand.InputContent(it))
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                        ),
-                        placeholder = {
-                            Text(
-                                text = "Содержимое",
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-                            )
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    )
+                    currentState.note.content.filterIsInstance<ContentItem.Text>()
+                        .forEach { contentItemText ->
+                            TextContent(
+                                modifier = modifier.weight(1f),
+                                text = contentItemText.content,
+                                onTextChanged = {
+                                    viewModel.processCommand(
+                                        EditNoteCommand.InputContent(it)
+                                    )
+                                })
+                        }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -186,4 +171,36 @@ fun EditNoteScreen(
 
         }
     }
+}
+
+@Composable
+private fun TextContent(
+    modifier: Modifier = Modifier,
+    text: String,
+    onTextChanged: (String) -> Unit
+) {
+    TextField(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        value = text,
+        onValueChange = onTextChanged,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
+        placeholder = {
+            Text(
+                text = "Содержимое",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            )
+        },
+        textStyle = TextStyle(
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    )
 }

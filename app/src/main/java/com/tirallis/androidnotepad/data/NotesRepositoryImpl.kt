@@ -1,5 +1,6 @@
 package com.tirallis.androidnotepad.data
 
+import com.tirallis.androidnotepad.domain.ContentItem
 import com.tirallis.androidnotepad.domain.Note
 import com.tirallis.androidnotepad.domain.NotesRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,11 +13,12 @@ class NotesRepositoryImpl @Inject constructor(
 
     override suspend fun addNote(
         title: String,
-        content: String,
+        content: List<ContentItem>,
         isPinned: Boolean,
         updatedAt: Long
     ) {
-        val noteDBModel = NoteDBModel(0, title, content, updatedAt, isPinned)
+        val note = Note(0, title, content, updatedAt, isPinned)
+        val noteDBModel = note.toDBModel()
         notesDao.addNote(noteDBModel)
     }
 
