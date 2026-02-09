@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tirallis.androidnotepad.domain.AddNoteUseCase
 import com.tirallis.androidnotepad.domain.ContentItem
+import com.tirallis.androidnotepad.domain.ContentItem.Image
+import com.tirallis.androidnotepad.domain.ContentItem.Text
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -84,8 +86,22 @@ class CreateNoteViewModel @Inject constructor(
                             if (lastItem is ContentItem.Text && lastItem.content.isBlank()) {
                                 removeAt(lastIndex)
                             }
-                            add(ContentItem.Image(command.uri.toString()))
-                            add(ContentItem.Text(""))
+                            add(Image(command.uri.toString()))
+                            add(Text(""))
+                        }.let {
+                            previousState.copy(content = it)
+                        }
+                    } else {
+                        previousState
+                    }
+                }
+            }
+
+            is CreateNoteCommand.DeleteImage -> {
+                _state.update { previousState ->
+                    if (previousState is CreateNoteState.Creation) {
+                        previousState.content.toMutableList().apply {
+                            removeAt(command.index)
                         }.let {
                             previousState.copy(content = it)
                         }
@@ -105,6 +121,8 @@ class CreateNoteViewModel @Inject constructor(
             val index: Int,
             val content: String
         ) : CreateNoteCommand
+
+        data class DeleteImage(val index: Int) : CreateNoteCommand
 
         data object Save : CreateNoteCommand
         data object Back : CreateNoteCommand
