@@ -114,9 +114,9 @@ class CreateNoteViewModel @Inject constructor(
     }
 
     sealed interface CreateNoteCommand {
-
-        data class AddImage(val uri: Uri) : CreateNoteCommand
         data class InputTitle(val title: String) : CreateNoteCommand
+        data class AddImage(val uri: Uri) : CreateNoteCommand
+
         data class InputContent(
             val index: Int,
             val content: String
