@@ -34,7 +34,7 @@ class CreateNoteViewModel @Inject constructor(
                     if (previousState is CreateNoteState.Creation) {
                         val newContent = previousState.content
                             .mapIndexed { index, contentItem ->
-                                if (index == command.index && contentItem is ContentItem.Text) {
+                                if (index == command.index && contentItem is Text) {
                                     contentItem.copy(content = command.content)
                                 } else {
                                     contentItem
@@ -67,7 +67,7 @@ class CreateNoteViewModel @Inject constructor(
                         if (previousState is CreateNoteState.Creation) {
                             val title = previousState.title
                             val content = previousState.content.filter {
-                                it !is ContentItem.Text || it.content.isNotBlank()
+                                it !is Text || it.content.isNotBlank()
                             }
                             addNoteUseCase(title, content)
                             CreateNoteState.Finished
@@ -83,7 +83,7 @@ class CreateNoteViewModel @Inject constructor(
                     if (previousState is CreateNoteState.Creation) {
                         previousState.content.toMutableList().apply {
                             val lastItem = last()
-                            if (lastItem is ContentItem.Text && lastItem.content.isBlank()) {
+                            if (lastItem is Text && lastItem.content.isBlank()) {
                                 removeAt(lastIndex)
                             }
                             add(Image(command.uri.toString()))
@@ -132,7 +132,7 @@ class CreateNoteViewModel @Inject constructor(
 
         data class Creation(
             val title: String = "",
-            val content: List<ContentItem> = listOf(ContentItem.Text("")),
+            val content: List<ContentItem> = listOf(Text("")),
         ) : CreateNoteState {
             val isSaveEnabled: Boolean
                 get() {
@@ -141,7 +141,7 @@ class CreateNoteViewModel @Inject constructor(
                         content.isEmpty() -> false
                         else -> {
                             content.any {
-                                it !is ContentItem.Text || it.content.isNotBlank()
+                                it !is Text || it.content.isNotBlank()
                             }
                         }
                     }
